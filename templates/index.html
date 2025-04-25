@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E63946;
+            --primary-dark: #B32D38;
+            --primary-light: #FFF5F5;
+            --accent-color: #F4A261;
+            --success-color: #2A9D8F;
+            --background-color: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-primary: #1D3557;
+            --text-secondary: #457B9D;
+            --text-light: #A8DADC;
+            --border-color: #E5E7EB;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(230, 57, 70, 0.1);
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+            --transition: all 0.3s ease;
+            --warning-color: #F4A261;
+            --error-color: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans Tamil', 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-container {
+            max-width: 1500px;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 26px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-selector {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-selector label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 30px 8px 12px;
+            border-radius: var(--border-radius-sm);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .language-selector::after {
+            content: '\f0d7';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 12px;
+            color: white;
+            pointer-events: none;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            height: calc(100% - 94px);
+        }
+
+        #intro {
+            background: var(--primary-light);
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #intro i {
+            font-size: 22px;
+            color: var(--primary-color);
+        }
+
+        #intro p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            background: var(--background-color);
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .user {
+            background: var(--primary-light);
+            color: var(--text-primary);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-light);
+            border-bottom-left-radius: 16px;
+            z-index: -1;
+        }
+
+        .bot {
+            background: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .bot::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--card-bg);
+            border-bottom-right-radius: 16px;
+            z-index: -1;
+        }
+
+        .recipe-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-md);
+            margin-top: 10px;
+        }
+
+        .recipe-card .message-content {
+            margin-bottom: 15px;
+        }
+
+        .recipe-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-md);
+            margin-top: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-image:hover {
+            transform: scale(1.05);
+        }
+
+        .save-recipe-btn {
+            background: var(--success-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+
+        .save-recipe-btn:hover {
+            background: #21867A;
+            transform: translateY(-2px);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user .message-header {
+            color: var(--primary-dark);
+            justify-content: flex-end;
+        }
+
+        .bot .message-header {
+            color: var(--primary-color);
+        }
+
+        .message-header i {
+            margin-right: 8px;
+        }
+
+        .message-content {
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .message-content strong {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .message-content ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .message-content li {
+            margin: 4px 0;
+        }
+
+        .controls-wrapper {
+            padding: 20px 25px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        #controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            position: relative;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 15px;
+            transition: var(--transition);
+            background: var(--background-color);
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+            outline: none;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(230, 57, 70, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #send-btn i {
+            margin-left: 4px;
+        }
+
+        #voice-btn {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        #voice-btn:hover {
+            background: var(--primary-light);
+        }
+
+        #voice-btn.recording {
+            background: var(--error-color);
+            color: white;
+            border-color: var(--error-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-md);
+            max-width: 100px;
+            box-shadow: var(--shadow-sm);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .typing-indicator.visible {
+            opacity: 1;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .image-loading {
+            display: none;
+            margin-top: 15px;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .image-loading.visible {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .schemes-sidebar {
+            position: absolute;
+            top: 94px;
+            right: -320px;
+            width: 320px;
+            height: calc(100% - 94px);
+            background: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            transition: right 0.3s ease;
+            z-index: 10;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .schemes-sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary-color);
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .schemes-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scheme-card {
+            padding: 15px;
+            background: var(--background-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scheme-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            background: var(--primary-light);
+        }
+
+        .scheme-card i {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .scheme-content {
+            flex: 1;
+        }
+
+        .scheme-name {
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .scheme-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .app-container {
+                height: 95vh;
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .header-right {
+                align-self: flex-end;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .recipe-image {
+                max-width: 100%;
+            }
+
+            #controls {
+                flex-wrap: wrap;
+            }
+
+            .button-group {
+                display: flex;
+                width: 100%;
+                gap: 10px;
+            }
+
+            #send-btn, #voice-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .schemes-sidebar {
+                width: 80%;
+                right: -80%;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #111827;
+                --card-bg: #1F2937;
+                --text-primary: #F3F4F6;
+                --text-secondary: #9CA3AF;
+                --text-light: #6B7280;
+                --border-color: #374151;
+                --primary-light: #4B2E39;
+            }
+
+            select {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            #intro {
+                background: var(--primary-light);
+            }
+
+            .user {
+                background: var(--primary-light);
+                color: var(--text-primary);
+            }
+
+            .user::before {
+                background: var(--primary-light);
+            }
+
+            .bot, .recipe-card {
+                background: var(--card-bg);
+            }
+
+            .bot::before {
+                background: var(--card-bg);
+            }
+
+            .message-content strong {
+                color: var(--primary-color);
+            }
+
+            #user-input {
+                background: var(--card-bg);
+                color: var(--text-primary);
+            }
+
+            .controls-wrapper, .schemes-sidebar {
+                background: var(--card-bg);
+            }
+
+            .typing-indicator, .scheme-card {
+                background: var(--card-bg);
+            }
+
+            .sidebar-toggle {
+                background: var(--card-bg);
+                color: var(--primary-color);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h1>Recipe Generator</h1>
+            </div>
+            <div class="header-right">
+                <div class="language-selector">
+                    <label for="language-select">Language:</label>
+                    <select id="language-select" aria-label="Select language">
+                        <option value="ta-IN">தமிழ்</option>
+                        <option value="en-US" selected>English</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div id="intro" role="complementary">
+                <i class="fas fa-info-circle"></i>
+                <p id="intro-text">Welcome to the Recipe Generator! Tell me what dish you'd like to cook, and I'll provide a detailed recipe with a stunning visual.</p>
+            </div>
+
+            <div id="chat-box" role="log" aria-live="polite">
+                <div class="message bot">
+                    <div class="message-header">
+                        <i class="fas fa-robot"></i> Assistant
+                    </div>
+                    <div class="message-content" id="initial-message">
+                        What recipe would you like me to generate? Share your preferences (e.g., cuisine, ingredients, dietary needs)!
+                    </div>
+                </div>
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="controls-wrapper">
+                <div id="controls">
+                    <textarea id="user-input" 
+                              placeholder="Type your recipe request here..." 
+                              aria-label="Message input" 
+                              autocomplete="off" 
+                              rows="2"></textarea>
+                    <div class="button-group">
+                        <button id="send-btn" aria-label="Send message">
+                            Send <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <button id="voice-btn" aria-label="Voice input">
+                            <i class="fas fa-microphone"></i> Speak
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="schemes-sidebar">
+            <div class="sidebar-toggle" id="sidebar-toggle">
+                <i class="fas fa-carrot"></i>
+            </div>
+            <div class="schemes-title">
+                <i class="fas fa-clipboard-list"></i> Recipe Ideas
+            </div>
+            <div class="scheme-card" data-scheme="Breakfast Recipe">
+                <i class="fas fa-egg"></i>
+                <div class="scheme-content">
+                    <div class="scheme-name">Breakfast Recipe</div>
+                    <div class="scheme-category">Morning</div>
+                </div>
+            </div>
+            <div class="scheme-card" data-scheme="Vegan Dish">
+                <i class="fas fa-leaf"></i>
+                <div class="scheme-content">
+                    <div class="scheme-name">Vegan Dish</div>
+                    <div class="scheme-category">Plant-Based</div>
+                </div>
+            </div>
+            <div class="scheme-card" data-scheme="Dessert Recipe">
+                <i class="fas fa-cake-candles"></i>
+                <div class="scheme-content">
+                    <div class="scheme-name">Dessert Recipe</div>
+                    <div class="scheme-category">Sweet</div>
+                </div>
+            </div>
+            <div class="scheme-card" data-scheme="Low Carb Meal">
+                <i class="fas fa-bread-slice"></i>
+                <div class="scheme-content">
+                    <div class="scheme-name">Low Carb Meal</div>
+                    <div class="scheme-category">Nutrition</div>
+                </div>
+            </div>
+            <div class="scheme-card" data-scheme="Italian Cuisine">
+                <i class="fas fa-pizza-slice"></i>
+                <div class="scheme-content">
+                    <div class="scheme-name">Italian Cuisine</div>
+                    <div class="scheme-category">Regional</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let currentLanguage = document.getElementById('language-select').value;
+
+                // Load voices on page load to avoid delays
+                if (typeof speechSynthesis !== 'undefined') {
+                    speechSynthesis.onvoiceschanged = () => {
+                        const voices = window.speechSynthesis.getVoices();
+                        console.log('Available voices:', voices.map(v => v.lang));
+                    };
+                    window.speechSynthesis.getVoices();
+                }
+
+                function showTypingIndicator() {
+                    document.querySelector('.typing-indicator').classList.add('visible');
+                }
+
+                function hideTypingIndicator() {
+                    document.querySelector('.typing-indicator').classList.remove('visible');
+                }
+
+                function addMessage(text, sender, imageUrl) {
+                    hideTypingIndicator();
+
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message ' + sender;
+
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'message-header';
+                    headerDiv.innerHTML = sender === 'user'
+                        ? (currentLanguage === 'ta-IN' ? 'நீங்கள்' : 'You')
+                        : (currentLanguage === 'ta-IN' ? '<i class="fas fa-robot"></i> உதவியாளர்' : '<i class="fas fa-robot"></i> Assistant');
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'message-content';
+
+                    const formattedText = text
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/^- (.*)$/gm, '<li>$1</li>')
+                        .replace(/^(?!<li>)(.*)$/gm, '$1<br>')
+                        .replace(/<li>(.*)/g, '<ul>$1</ul>');
+
+                    contentDiv.innerHTML = formattedText;
+
+                    if (sender === 'bot') {
+                        const recipeCard = document.createElement('div');
+                        recipeCard.className = 'recipe-card';
+                        recipeCard.appendChild(contentDiv);
+
+                        if (imageUrl) {
+                            const image = document.createElement('img');
+                            image.className = 'recipe-image';
+                            image.alt = 'Generated recipe image';
+                            image.src = imageUrl;
+                            recipeCard.appendChild(image);
+                        } else {
+                            const loadingSpinner = document.createElement('div');
+                            loadingSpinner.className = 'image-loading visible';
+                            recipeCard.appendChild(loadingSpinner);
+                            setTimeout(() => loadingSpinner.classList.remove('visible'), 3000);
+                        }
+
+                        const saveButton = document.createElement('button');
+                        saveButton.className = 'save-recipe-btn';
+                        saveButton.textContent = currentLanguage === 'ta-IN' ? 'ரெசிபியை சேமி' : 'Save Recipe';
+                        saveButton.addEventListener('click', () => saveRecipe(text));
+                        recipeCard.appendChild(saveButton);
+
+                        messageDiv.appendChild(headerDiv);
+                        messageDiv.appendChild(recipeCard);
+                    } else {
+                        messageDiv.appendChild(headerDiv);
+                        messageDiv.appendChild(contentDiv);
+                    }
+
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.appendChild(messageDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+
+                function saveRecipe(text) {
+                    const recipeNameMatch = text.match(/\*\*Recipe Name\*\*\s*\n\s*(.*?)\n/);
+                    const fileName = recipeNameMatch ? recipeNameMatch[1].replace(/\s+/g, '_') + '.txt' : 'recipe.txt';
+                    const blob = new Blob([text.replace(/\*\*/g, '')], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }
+
+                function resetChat() {
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = '';
+                    const initialMessage = currentLanguage === 'ta-IN'
+                        ? 'நான் எந்த ரெசிபியை உருவாக்க வேண்டும்? உங Itália Food, பொருட்கள், உணவு கட்டுப்பாடுகள்) பகிரவும்!'
+                        : 'What recipe would you like me to generate? Share your preferences (e.g., cuisine, ingredients, dietary needs)!';
+                    addMessage(initialMessage, 'bot', null);
+                }
+
+                function sendMessage(message) {
+                    showTypingIndicator();
+
+                    if (message.toLowerCase().trim() === 'restart') {
+                        setTimeout(() => {
+                            hideTypingIndicator();
+                            resetChat();
+                            const restartMessage = currentLanguage === 'ta-IN'
+                                ? 'உரையாடல் மீட்டமைக்கப்பட்டது. இப்போது எந்த ரெசிபியை உருவாக்க வேண்டும்?'
+                                : 'Chat has been restarted. What recipe would you like me to generate now?';
+                            addMessage(restartMessage, 'bot', null);
+                            speak(restartMessage);
+                        }, 1000);
+                        return;
+                    }
+
+                    setTimeout(() => {
+                        fetch('/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message: message })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            addMessage(data.response, 'bot', data.image_url);
+                            speak(data.response);
+                        })
+                        .catch(() => {
+                            hideTypingIndicator();
+                            const errorMessage = currentLanguage === 'ta-IN'
+                                ? 'சர்வருடன் இணைப்பதில் சிக்கல் உள்ளது. தயவு செய்து பின்னர் முயற்சிக்கவும்.'
+                                : 'There was an issue connecting to the server. Please try again later.';
+                            addMessage(errorMessage, 'bot', null);
+                        });
+                    }, 1000);
+                }
+
+                function speak(text) {
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = currentLanguage;
+                        const voices = window.speechSynthesis.getVoices();
+                        let voiceFound = false;
+                        for (let voice of voices) {
+                            if (voice.lang.includes(currentLanguage.split('-')[0])) {
+                                utterance.voice = voice;
+                                voiceFound = true;
+                                break;
+                            }
+                        }
+                        if (!voiceFound && currentLanguage === 'ta-IN') {
+                            const errorMessage = 'தமிழ் குரல் ஆதரவு இல்லை. ஆங்கிலத்தில் பேசப்படும்.';
+                            addMessage(errorMessage, 'bot', null);
+                            utterance.lang = 'en-US'; // Fallback to English
+                        }
+                        utterance.rate = 0.9;
+                        window.speechSynthesis.speak(utterance);
+                    } else {
+                        const errorMessage = currentLanguage === 'ta-IN'
+                            ? 'உங்கள் உலாவியில் பேச்சு ஒருங்கிணைப்பு ஆதரிக்கப்படவில்லை.'
+                            : 'Speech synthesis is not supported in your browser.';
+                        addMessage(errorMessage, 'bot', null);
+                    }
+                }
+
+                document.getElementById('send-btn').addEventListener('click', () => {
+                    const userInput = document.getElementById('user-input');
+                    const userMessage = userInput.value.trim();
+                    if (userMessage === '') return;
+                    addMessage(userMessage, 'user', null);
+                    userInput.value = '';
+                    sendMessage(userMessage);
+                });
+
+                document.getElementById('user-input').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        if (e.shiftKey) {
+                            e.preventDefault();
+                            e.target.value += '\n';
+                        } else {
+                            e.preventDefault();
+                            document.getElementById('send-btn').click();
+                        }
+                    }
+                });
+
+                document.getElementById('language-select').addEventListener('change', function() {
+                    currentLanguage = this.value;
+                    this.style.transform = 'scale(1.1)';
+                    setTimeout(() => this.style.transform = 'scale(1)', 200);
+
+                    const introText = document.getElementById('intro-text');
+                    const initialMessage = document.getElementById('initial-message');
+                    const userInput = document.getElementById('user-input');
+                    const sendBtn = document.getElementById('send-btn');
+                    const voiceBtn = document.getElementById('voice-btn');
+
+                    if (currentLanguage === 'ta-IN') {
+                        introText.textContent = 'ரெசிபி ஜெனரேட்டருக்கு வரவேற்கிறோம்! நீங்கள் எந்த உணவை சமைக்க விரும்புகிறீர்கள் என்று சொல்லுங்கள், நான் விரிவான ரெசிபியையும் அழகான படத்தையும் வழங்குவேன்.';
+                        initialMessage.textContent = 'நான் எந்த ரெசிபியை உருவாக்க வேண்டும்? உங்கள் விருப்பங்களை (எ.கா., உணவு வகை, பொருட்கள், உணவு கட்டுப்பாடுகள்) பகிரவும்!';
+                        userInput.placeholder = 'உங்கள் ரெசிபி கோரிக்கையை இங்கே தட்டச்சு செய்யவும்...';
+                        sendBtn.innerHTML = 'அனுப்பு <i class="fas fa-paper-plane"></i>';
+                        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> பேசு';
+                        // Notify user about Tamil input
+                        addMessage('தமிழ் உள்ளீட்டைப் பயன்படுத்த, உங்கள் சாதனத்தில் தமிழ் விசைப்பலகை நிறுவப்பட்டிருப்பதை உறுதி செய்யவும்.', 'bot', null);
+                    } else {
+                        introText.textContent = 'Welcome to the Recipe Generator! Tell me what dish you\'d like to cook, and I\'ll provide a detailed recipe with a stunning visual.';
+                        initialMessage.textContent = 'What recipe would you like me to generate? Share your preferences (e.g., cuisine, ingredients, dietary needs)!';
+                        userInput.placeholder = 'Type your recipe request here...';
+                        sendBtn.innerHTML = 'Send <i class="fas fa-paper-plane"></i>';
+                        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Speak';
+                    }
+                    resetChat();
+                });
+
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (SpeechRecognition) {
+                    const recognition = new SpeechRecognition();
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 1;
+
+                    recognition.onstart = () => {
+                        console.log('Speech recognition started, language:', recognition.lang);
+                    };
+
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        document.getElementById('user-input').value = transcript;
+                        document.getElementById('send-btn').click();
+                        document.getElementById('voice-btn').classList.remove('recording');
+                    };
+
+                    recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        document.getElementById('voice-btn').classList.remove('recording');
+                        const errorMessage = currentLanguage === 'ta-IN'
+                            ? 'தமிழ் பேச்சு அங்கீகாரம் ஆதரிக்கப்படவில்லை. தயவு செய்து உரையை தட்டச்சு செய்யவும்.'
+                            : 'Speech recognition for Tamil is not supported. Please type your request.';
+                        addMessage(errorMessage, 'bot', null);
+                    };
+
+                    recognition.onend = () => {
+                        document.getElementById('voice-btn').classList.remove('recording');
+                    };
+
+                    document.getElementById('voice-btn').addEventListener('click', function() {
+                        if (this.classList.contains('recording')) {
+                            recognition.stop();
+                            this.classList.remove('recording');
+                        } else {
+                            recognition.lang = currentLanguage;
+                            recognition.start();
+                            this.classList.add('recording');
+                        }
+                    });
+                } else {
+                    document.getElementById('voice-btn').style.display = 'none';
+                    const errorMessage = currentLanguage === 'ta-IN'
+                        ? 'உங்கள் உலாவியில் பேச்சு அங்கீகாரம் ஆதரிக்கப்படவில்லை.'
+                        : 'Speech recognition is not supported in this browser.';
+                    addMessage(errorMessage, 'bot', null);
+                }
+
+                document.getElementById('sidebar-toggle').addEventListener('click', () => {
+                    document.querySelector('.schemes-sidebar').classList.toggle('active');
+                });
+
+                document.querySelectorAll('.scheme-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const recipeName = card.getAttribute('data-scheme');
+                        const schemeName = card.querySelector('.scheme-name').textContent;
+                        document.getElementById('user-input').value = currentLanguage === 'ta-IN'
+                            ? `எனக்கு ${schemeName} உருவாக்கவும்`
+                            : `Generate a ${recipeName}`;
+                        document.getElementById('send-btn').click();
+                        if (window.innerWidth <= 768) {
+                            document.querySelector('.schemes-sidebar').classList.remove('active');
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

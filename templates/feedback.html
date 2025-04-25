@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator - User Feedback</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E63946;
+            --primary-dark: #B32D38;
+            --primary-light: #FFF5F5;
+            --secondary-color: #F4A261;
+            --background-color: #F9FAFB;
+            --text-primary: #1D3557;
+            --text-secondary: #457B9D;
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 6px 20px rgba(230, 57, 70, 0.15);
+            --border-radius-md: 16px;
+            --border-radius-sm: 8px;
+            --transition: all 0.3s ease;
+            --error-color: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-color), var(--primary-light));
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23E63946" fill-opacity="0.05" fill-rule="evenodd"%3E%3Cpath d="M0 40L40 0H20L0 20zM40 40V20L20 40z"/%3E%3C/g%3E%3C/svg%3E');
+            z-index: -1;
+        }
+
+        .feedback-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .header {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-md);
+            padding: 15px 30px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header .logo-small {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header .logo-small i {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .feedback-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feedback-section h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feedback-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .refresh-btn:hover {
+            background: #E69544;
+            transform: translateY(-2px);
+        }
+
+        .refresh-btn i {
+            font-size: 16px;
+        }
+
+        .feedback-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .feedback-card {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feedback-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feedback-card p {
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .feedback-card .rating {
+            margin-bottom: 10px;
+        }
+
+        .feedback-card .rating i {
+            font-size: 18px;
+            color: var(--secondary-color);
+        }
+
+        .feedback-card .timestamp {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .no-feedback, .error-message {
+            font-size: 16px;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-message {
+            color: var(--error-color);
+        }
+
+        .loading-indicator {
+            display: none;
+            margin: 20px auto;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-indicator.visible {
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .back-btn:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .back-btn i {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 20px;
+            }
+
+            .header h2 {
+                font-size: 20px;
+            }
+
+            .feedback-section h1 {
+                font-size: 28px;
+            }
+
+            .feedback-list {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .feedback-card {
+                padding: 15px;
+            }
+
+            .feedback-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #111827, #4B2E39);
+            }
+
+            .header {
+                background: rgba(31, 41, 55, 0.95);
+                color: #F3F4F6;
+            }
+
+            .header h2 {
+                color: #F3F4F6;
+            }
+
+            .feedback-card {
+                background: #1F2937;
+                color: #F3F4F6;
+            }
+
+            .feedback-card p {
+                color: #F3F4F6;
+            }
+
+            .feedback-card .timestamp {
+                color: #9CA3AF;
+            }
+
+            .no-feedback, .error-message {
+                color: #9CA3AF;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-container">
+        <header class="header">
+            <div class="logo-small">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h2>Recipe Generator</h2>
+        </header>
+
+        <div class="feedback-section">
+            <h1>User Feedback</h1>
+            <div class="feedback-controls">
+                <button class="refresh-btn" id="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh Feedback
+                </button>
+            </div>
+            <div class="loading-indicator" id="loading-indicator"></div>
+            <div class="feedback-list" id="feedback-list">
+                <!-- Feedback cards will be populated here -->
+            </div>
+            <p class="no-feedback" id="no-feedback" style="display: none;">No feedback available yet.</p>
+            <p class="error-message" id="error-message" style="display: none;">Failed to load feedback. <a href="#" id="retry-link">Retry</a></p>
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackListDiv = document.getElementById('feedback-list');
+            const noFeedbackDiv = document.getElementById('no-feedback');
+            const errorMessageDiv = document.getElementById('error-message');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const retryLink = document.getElementById('retry-link');
+            const refreshBtn = document.getElementById('refresh-btn');
+
+            function showLoading() {
+                loadingIndicator.classList.add('visible');
+                feedbackListDiv.style.display = 'none';
+                noFeedbackDiv.style.display = 'none';
+                errorMessageDiv.style.display = 'none';
+            }
+
+            function hideLoading() {
+                loadingIndicator.classList.remove('visible');
+                feedbackListDiv.style.display = 'grid';
+            }
+
+            function fetchFeedback() {
+                showLoading();
+                fetch('/feedback', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(feedbackList => {
+                    hideLoading();
+                    feedbackListDiv.innerHTML = '';
+
+                    if (feedbackList.length === 0) {
+                        noFeedbackDiv.style.display = 'block';
+                        return;
+                    }
+
+                    noFeedbackDiv.style.display = 'none';
+                    feedbackList.forEach(feedback => {
+                        const feedbackCard = document.createElement('div');
+                        feedbackCard.className = 'feedback-card';
+
+                        const feedbackText = document.createElement('p');
+                        feedbackText.textContent = feedback.feedback;
+                        feedbackCard.appendChild(feedbackText);
+
+                        const ratingDiv = document.createElement('div');
+                        ratingDiv.className = 'rating';
+                        for (let i = 0; i < 5; i++) {
+                            const star = document.createElement('i');
+                            star.className = 'fas fa-star';
+                            star.style.color = i < feedback.rating ? 'var(--secondary-color)' : '#ccc';
+                            ratingDiv.appendChild(star);
+                        }
+                        feedbackCard.appendChild(ratingDiv);
+
+                        const timestamp = document.createElement('p');
+                        timestamp.className = 'timestamp';
+                        timestamp.textContent = new Date(feedback.timestamp).toLocaleString();
+                        feedbackCard.appendChild(timestamp);
+
+                        feedbackListDiv.appendChild(feedbackCard);
+                    });
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Error fetching feedback:', error);
+                    errorMessageDiv.style.display = 'block';
+                    noFeedbackDiv.style.display = 'none';
+                    feedbackListDiv.style.display = 'none';
+                });
+            }
+
+            // Initial fetch
+            fetchFeedback();
+
+            // Refresh button
+            refreshBtn.addEventListener('click', () => {
+                refreshBtn.disabled = true;
+                refreshBtn.style.opacity = '0.6';
+                fetchFeedback();
+                setTimeout(() => {
+                    refreshBtn.disabled = false;
+                    refreshBtn.style.opacity = '1';
+                }, 1000);
+            });
+
+            // Retry link
+            retryLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetchFeedback();
+            });
+        });
+    </script>
+</body>
+</html>

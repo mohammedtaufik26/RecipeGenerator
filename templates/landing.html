@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator - Welcome</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #E63946;
+            --primary-dark: #B32D38;
+            --primary-light: #FFF5F5;
+            --secondary-color: #F4A261;
+            --background-color: #F9FAFB;
+            --text-primary: #1D3557;
+            --text-secondary: #457B9D;
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 6px 20px rgba(230, 57, 70, 0.15);
+            --border-radius-md: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-color), var(--primary-light));
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23E63946" fill-opacity="0.05" fill-rule="evenodd"%3E%3Cpath d="M0 40L40 0H20L0 20zM40 40V20L20 40z"/%3E%3C/g%3E%3C/svg%3E');
+            z-index: -1;
+        }
+
+        .landing-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .header {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-md);
+            padding: 15px 30px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header .logo-small {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header .logo-small i {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(120deg, rgba(230, 57, 70, 0.1), rgba(244, 162, 97, 0.1));
+            border-radius: var(--border-radius-md);
+            position: relative;
+        }
+
+        .hero-carousel {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            overflow: hidden;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-images img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+        }
+
+        .hero-section h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .hero-section p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 30px;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+            color: #fff;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .start-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .start-btn i {
+            font-size: 20px;
+        }
+
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out calc(0.2s * var(--i));
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover i {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .footer .social-links {
+            margin-bottom: 20px;
+        }
+
+        .footer .social-links a {
+            color: white;
+            font-size: 24px;
+            margin: 0 15px;
+            transition: var(--transition);
+        }
+
+        .footer .social-links a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .feedback-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .feedback-btn:hover {
+            background: #E69544;
+            transform: translateY(-2px);
+        }
+
+        .feedback-btn i {
+            font-size: 18px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: var(--border-radius-md);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .modal-content h3 {
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .modal-content textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .rating {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .rating i {
+            font-size: 24px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating i.filled {
+            color: var(--secondary-color);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-buttons .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .modal-buttons .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-buttons .cancel-btn {
+            background: var(--border-color);
+            color: var(--text-primary);
+            border: none;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background: #D1D5DB;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 20px;
+            }
+
+            .header h2 {
+                font-size: 20px;
+            }
+
+            .hero-section {
+                padding: 40px 15px;
+            }
+
+            .hero-carousel img {
+                height: 250px;
+            }
+
+            .hero-section h1 {
+                font-size: 32px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .start-btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+
+            .features-section {
+                grid-template-columns: 1fr;
+                padding: 0 10px;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #111827, #4B2E39);
+            }
+
+            .header {
+                background: rgba(31, 41, 55, 0.95);
+                color: #F3F4F6;
+            }
+
+            .header h2 {
+                color: #F3F4F6;
+            }
+
+            .hero-section {
+                background: linear-gradient(120deg, rgba(230, 57, 70, 0.15), rgba(244, 162, 97, 0.15));
+            }
+
+            .feature-card {
+                background: #1F2937;
+                color: #F3F4F6;
+            }
+
+            .feature-card h3 {
+                color: #F3F4F6;
+            }
+
+            .feature-card p {
+                color: #9CA3AF;
+            }
+
+            .footer {
+                background: #1F2937;
+            }
+
+            .modal-content {
+                background: #1F2937;
+                color: #F3F4F6;
+            }
+
+            .modal-content textarea {
+                background: #374151;
+                color: #F3F4F6;
+                border-color: #4B5563;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <header class="header">
+            <div class="logo-small">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <h2>Recipe Generator</h2>
+        </header>
+
+        <div class="hero-section">
+            <div class="hero-carousel">
+                <div class="carousel-images">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd" alt="Salad">
+                    <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187" alt="Pasta">
+                    <img src="https://images.unsplash.com/photo-1551218372-a8789b81b253" alt="Dessert">
+                </div>
+                <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-btn next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <h1>Recipe Generator</h1>
+            <p>Create mouthwatering recipes tailored to your taste, complete with stunning AI-generated visuals to inspire your cooking.</p>
+            <a href="/chatbot" class="start-btn">
+                Start Cooking <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="features-section">
+            <div class="feature-card" style="--i: 1;">
+                <i class="fas fa-utensils"></i>
+                <h3>Custom Recipes</h3>
+                <p>Generate recipes based on your ingredients, cuisine, or dietary preferences.</p>
+            </div>
+            <div class="feature-card" style="--i: 2;">
+                <i class="fas fa-image"></i>
+                <h3>Visual Inspiration</h3>
+                <p>Visualize your dishes with AI-generated images of your recipes.</p>
+            </div>
+            <div class="feature-card" style="--i: 3;">
+                <i class="fas fa-globe"></i>
+                <h3>Bilingual Support</h3>
+                <p>Interact in English or Tamil for a personalized experience.</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p>Contact: support@recipegenerator.com</p>
+            <p>© 2025 Recipe Generator. All rights reserved.</p>
+            <div>
+                <a href="/feedback_page" class="feedback-btn">
+                    <i class="fas fa-comment"></i> View Feedback
+                </a>
+                <button class="feedback-btn" onclick="openFeedbackModal()">
+                    <i class="fas fa-comment"></i> Give Feedback
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="feedback-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeFeedbackModal()">&times;</span>
+            <h3>Share Your Feedback</h3>
+            <textarea id="feedback-input" placeholder="Tell us what you think..." aria-label="Feedback input"></textarea>
+            <div class="rating">
+                <i class="fas fa-star" data-value="1"></i>
+                <i class="fas fa-star" data-value="2"></i>
+                <i class="fas fa-star" data-value="3"></i>
+                <i class="fas fa-star" data-value="4"></i>
+                <i class="fas fa-star" data-value="5"></i>
+            </div>
+            <p class="error-message" id="feedback-error">Please provide feedback before submitting.</p>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeFeedbackModal()">Cancel</button>
+                <button class="submit-btn" onclick="submitFeedback()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carousel functionality
+            const carousel = document.querySelector('.carousel-images');
+            const images = document.querySelectorAll('.carousel-images img');
+            let currentIndex = 0;
+            const totalImages = images.length;
+
+            function updateCarousel() {
+                carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            document.querySelector('.carousel-btn.next').addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % totalImages;
+                updateCarousel();
+            });
+
+            document.querySelector('.carousel-btn.prev').addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+                updateCarousel();
+            });
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % totalImages;
+                updateCarousel();
+            }, 5000);
+
+            // Feedback modal functionality
+            let currentRating = 5; // Default rating
+
+            function openFeedbackModal() {
+                document.getElementById('feedback-modal').style.display = 'flex';
+                document.getElementById('feedback-input').value = '';
+                document.getElementById('feedback-error').style.display = 'none';
+                currentRating = 5;
+                updateRatingStars();
+            }
+
+            function closeFeedbackModal() {
+                document.getElementById('feedback-modal').style.display = 'none';
+            }
+
+            function updateRatingStars() {
+                document.querySelectorAll('.rating i').forEach(star => {
+                    star.classList.toggle('filled', star.dataset.value <= currentRating);
+                });
+            }
+
+            document.querySelectorAll('.rating i').forEach(star => {
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.value);
+                    updateRatingStars();
+                });
+            });
+
+            window.openFeedbackModal = openFeedbackModal;
+            window.closeFeedbackModal = closeFeedbackModal;
+
+            window.submitFeedback = function() {
+                const feedback = document.getElementById('feedback-input').value.trim();
+                const errorMessage = document.getElementById('feedback-error');
+
+                if (!feedback) {
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                const timestamp = new Date().toISOString();
+                fetch('/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ feedback, rating: currentRating, timestamp })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        errorMessage.textContent = data.error;
+                        errorMessage.style.display = 'block';
+                    } else {
+                        alert('Thank you for your feedback!');
+                        closeFeedbackModal();
+                    }
+                })
+                .catch(() => {
+                    errorMessage.textContent = 'Failed to submit feedback. Please try again.';
+                    errorMessage.style.display = 'block';
+                });
+            };
+        });
+    </script>
+</body>
+</html>

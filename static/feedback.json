@@ -1,0 +1,17 @@
+[
+  {
+    "feedback": "the website is good",
+    "rating": 5,
+    "timestamp": "2025-04-18T07:39:59.238Z"
+  },
+  {
+    "feedback": "this is poor",
+    "rating": 5,
+    "timestamp": "2025-04-18T08:43:29.532Z"
+  },
+  {
+    "feedback": "this is ok",
+    "rating": 5,
+    "timestamp": "2025-04-18T11:30:28.905Z"
+  }
+]
