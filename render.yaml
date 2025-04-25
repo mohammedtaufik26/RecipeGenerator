@@ -1,0 +1,1 @@
+"services:-type: web name:recipe-generator env: python buildCommand: \"pip install -r requirements.txt\" start command: \"python app.py\"" 
