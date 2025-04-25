@@ -1,14 +1,16 @@
 import asyncio
-from asyncio import WindowsSelectorEventLoopPolicy
+import sys
 from flask import Flask, render_template, request, jsonify
 import g4f
 from g4f.client import Client
 import re
 import json
 import os
-
-# Set the event loop policy for Windows (if applicable)
-asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+ 
+# Set the event loop policy only on Windows
+if sys.platform.startswith('win'):
+    from asyncio import WindowsSelectorEventLoopPolicy
+    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 app = Flask(__name__)
 image_client = Client()
